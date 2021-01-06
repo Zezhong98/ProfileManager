@@ -1,0 +1,8 @@
+// take login status checking into util function
+
+// change positionManager(queue) to positionCounter(int)
+
+// add education module:
+//    add institution and education to database;
+//    add educationItem to add.php, view.php, edit.php just like positionItem does
+//    accomplish autocomplete function to education-school

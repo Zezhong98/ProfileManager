@@ -1,0 +1,21 @@
+.success {
+  color: green;
+}
+
+.failure {
+  color: red;
+}
+
+#pageMover {
+  margin: auto;
+  width: 130px;
+}
+
+.positionItem {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+input.unshown {
+  display: none;
+}
