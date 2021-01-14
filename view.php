@@ -11,7 +11,7 @@
   session_start();
 
   getProfile_idCheck();
-  
+
   $row = profileSelect($pdo, $_GET['profile_id']);
 
   if ($row == false) die('This profile does not exist');
@@ -46,7 +46,7 @@
         echo "<ul>Positions:\n";
         foreach ($posRowSet as $posRow) {
           echo "<li>\n";
-          echo "<p>".htmlentities($posRow['year'])." : ".htmlentities($posRow['description'])."</p>\n";
+          echo "<p>".htmlentities($posRow['year'])." : ".htmlentities($posRow['summary'])."</p>\n";
           echo "</li>\n";
         }
         echo "</ul>\n";

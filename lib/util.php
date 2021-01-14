@@ -8,6 +8,11 @@
 
 
   // Status/Message Check functions
+  function setFailure($msg, $des) {
+    $_SESSION['failure'] = $msg;
+    header('Location:'.$des);
+  }
+
   function flashMessage() {
     if (isset($_SESSION['success'])) {
       echo '<p class="success">'.$_SESSION['success']."</p>\n";
@@ -89,7 +94,7 @@
       header('Location: '.$_SERVER['REQUEST_URI']);
       return false;
     }
-    elseif (strrpos($_POST['email'], '@') == false) {
+    elseif (strpos($_POST['email'], '@') == false) {
       $_SESSION['failure'] = 'Email address must contain @';
       header('Location: '.$_SERVER['REQUEST_URI']);
       return false;
@@ -110,7 +115,7 @@
 
   // Insertion functions
   function profileInsert($user_id, $pdo) {
-    $stmt = $pdo->prepare('INSERT INTO Profile
+    $stmt = $pdo->prepare('INSERT INTO profile
         (user_id, first_name, last_name, email, headline, summary)
         VALUES ( :uid, :fn, :ln, :em, :he, :su)');
     $stmt->execute(array(
@@ -144,8 +149,8 @@
   }
 
   function positionInsert($pdo, $profile_id, $rank) {
-    $stmt = $pdo->prepare('INSERT INTO Position
-            (profile_id, rank, year, description)
+    $stmt = $pdo->prepare('INSERT INTO position
+            (profile_id, ranking, year, summary)
         VALUES ( :pid, :rank, :year, :desc)');
     $stmt->execute(array(
         ':pid' => $profile_id,
@@ -168,7 +173,7 @@
     }
 
     $stmt = $pdo->prepare('INSERT INTO education
-            (profile_id, institution_id, rank, year)
+            (profile_id, institution_id, ranking, year)
         VALUES ( :pid, :istid, :rank, :year)');
     $stmt->execute(array(
         ':pid' => $profile_id,
@@ -188,19 +193,18 @@
   }
 
   function positionsSelect($pdo, $profile_id) {
-    $stmt = $pdo->prepare('SELECT * FROM position WHERE profile_id=:pi ORDER BY rank');
+    $stmt = $pdo->prepare('SELECT * FROM position WHERE profile_id=:pi ORDER BY ranking');
     $stmt->execute(array(':pi' => $profile_id));
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   function educationSelect($pdo, $profile_id) {
-    $stmt = $pdo->prepare('SELECT education.year, institution.name, education.rank
+    $stmt = $pdo->prepare('SELECT education.year, institution.name, education.ranking
                            FROM education
                            INNER JOIN institution
                            ON education.institution_id = institution.institution_id
-                           WHERE profile_id=:pi ORDER BY rank');
+                           WHERE profile_id=:pi ORDER BY ranking');
     $stmt->execute(array(':pi' => $profile_id));
-    // return (education.year, institution.name, education.rank)
     return $stmt->fetchAll(PDO::FETCH_NUM);
   }
 
@@ -254,8 +258,8 @@
 
   function positionUpdate($pdo, $profile_id, $rank) {
     $stmt = $pdo->prepare('UPDATE Position SET
-                           rank = :rank, year = :year, description = :desc
-                           WHERE profile_id = :pfid AND rank = :rank');
+                           ranking = :rank, year = :year, summary = :desc
+                           WHERE profile_id = :pfid AND ranking = :rank');
     $stmt->execute(array(
         ':pfid' => $profile_id,
         ':rank' => $rank,
@@ -274,7 +278,7 @@
   // Deletion functions
   function positionDelete($pdo, $profile_id, $rank) {
     $stmt = $pdo->prepare('DELETE FROM position
-                           WHERE profile_id = :pid AND rank = :r');
+                           WHERE profile_id = :pid AND ranking = :r');
     $stmt->execute(array(
       ':pid' => $profile_id,
       ':r' => $rank
@@ -283,7 +287,7 @@
 
   function educationDelete($pdo, $profile_id, $rank) {
     $stmt = $pdo->prepare('DELETE FROM education
-                           WHERE profile_id = :pid AND rank = :r');
+                           WHERE profile_id = :pid AND ranking = :r');
     $stmt->execute(array(
       ':pid' => $profile_id,
       ':r' => $rank

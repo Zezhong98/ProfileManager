@@ -5,6 +5,8 @@
 
   session_start();
 
+  cancelCheck();
+
   if (isset($_POST['email']) && isset($_POST['pass'])) {
     $check = hash('md5', 'XyZzy12*_'.$_POST['pass']);
     $stmt = $pdo->prepare(
@@ -19,8 +21,7 @@
       return;
     } else {
       // login fail
-      $_SESSION['failure'] = 'incorrect password';
-      header('Location:login.php');
+      setFailure('incorrect password', 'login.php');
       return;
     }
   }
@@ -43,6 +44,7 @@
       <input type="password" name="pass" id="pw"><br/>
       <input type="submit" onclick="return loginValidate('#email','#pw');" value="Log In">
       <input type="submit" name="cancel" value="Cancel">
+      <p><a href="signup.php">Sign up</a></p>
     </form>
     <p>
       For a password hint, view source and find an account and password hint
